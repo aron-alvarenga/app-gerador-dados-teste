@@ -1,0 +1,4 @@
+mysql-connector-python==8.0.33
+PyQt5==5.15.9
+Faker==18.9.0
+pandas==2.0.1
