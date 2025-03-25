@@ -75,7 +75,7 @@ python main.py
 pip install pyinstaller
 
 # Gerar executável
-pyinstaller --onefile --windowed gerador_dados_teste.py
+pyinstaller --onefile --windowed main.py
 ```
 
 ## 🔧 Configuração e Uso
