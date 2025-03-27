@@ -4,6 +4,7 @@ import csv
 import json
 import random
 from typing import Dict, List, Any
+import datetime
 
 import mysql.connector
 import pandas as pd
@@ -74,7 +75,13 @@ class TestDataGenerator:
         self.connection = mysql.connector.connect(**connection_params)
         self.cursor = self.connection.cursor(dictionary=True)
         self.faker = Faker('pt_BR')
-        
+
+    class DateTimeEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, (datetime.date, datetime.datetime)):
+                return obj.isoformat()
+            return super().default(obj)
+
     def listar_tabelas(self):
         """
         Lista todas as tabelas do banco de dados.
@@ -163,7 +170,7 @@ class TestDataGenerator:
         
         elif formato == 'JSON':
             with open(caminho_arquivo, 'w', encoding='utf-8') as f:
-                json.dump(dados, f, indent=2, ensure_ascii=False)
+                json.dump(dados, f, indent=2, ensure_ascii=False, cls=self.DateTimeEncoder)
 
 class TestDataGeneratorGUI(QMainWindow):
     def __init__(self):
