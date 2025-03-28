@@ -11,10 +11,133 @@ import pandas as pd
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
     QLabel, QPushButton, QComboBox, QLineEdit, QTableWidget, 
-    QTableWidgetItem, QFileDialog, QCheckBox, QMessageBox, QFormLayout
+    QTableWidgetItem, QFileDialog, QCheckBox, QMessageBox, QFormLayout,
+    QFrame
 )
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QPalette, QColor
 from faker import Faker
+
+class TailwindStyle:
+    @staticmethod
+    def apply_style(app):
+        app.setStyle('Fusion')
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor('#ffffff'))
+        palette.setColor(QPalette.WindowText, QColor('#1f2937'))
+        palette.setColor(QPalette.Base, QColor('#f3f4f6'))
+        palette.setColor(QPalette.AlternateBase, QColor('#e5e7eb'))
+        palette.setColor(QPalette.ToolTipBase, QColor('#1f2937'))
+        palette.setColor(QPalette.ToolTipText, QColor('#ffffff'))
+        palette.setColor(QPalette.Text, QColor('#1f2937'))
+        palette.setColor(QPalette.Button, QColor('#f3f4f6'))
+        palette.setColor(QPalette.ButtonText, QColor('#1f2937'))
+        palette.setColor(QPalette.BrightText, QColor('#ffffff'))
+        palette.setColor(QPalette.Link, QColor('#3b82f6'))
+        palette.setColor(QPalette.Highlight, QColor('#3b82f6'))
+        palette.setColor(QPalette.HighlightedText, QColor('#ffffff'))
+        app.setPalette(palette)
+
+    @staticmethod
+    def get_button_style():
+        return """
+            QPushButton {
+                background-color: #3b82f6;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-weight: 500;
+            }
+            QPushButton:hover {
+                background-color: #2563eb;
+            }
+            QPushButton:pressed {
+                background-color: #1d4ed8;
+            }
+        """
+
+    @staticmethod
+    def get_input_style():
+        return """
+            QLineEdit {
+                background-color: #ffffff;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                padding: 8px;
+                color: #1f2937;
+            }
+            QLineEdit:focus {
+                border: 1px solid #3b82f6;
+            }
+            QComboBox {
+                background-color: #ffffff;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                padding: 8px;
+                color: #1f2937;
+                min-width: 200px;
+            }
+            QComboBox:focus {
+                border: 1px solid #3b82f6;
+            }
+            QComboBox::drop-down {
+                border: none;
+                width: 30px;
+            }
+            QComboBox::down-arrow {
+                image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgMTIgOCIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTEgMUw2IDZMMTEgMSIgc3Ryb2tlPSIjNkI4MkY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==);
+                width: 12px;
+                height: 8px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #ffffff;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                padding: 4px;
+            }
+            QComboBox QAbstractItemView::item {
+                padding: 8px;
+                border-radius: 4px;
+            }
+            QComboBox QAbstractItemView::item:hover {
+                background-color: #f3f4f6;
+            }
+        """
+
+    @staticmethod
+    def get_checkbox_style():
+        return """
+            QCheckBox {
+                color: #1f2937;
+                spacing: 8px;
+            }
+            QCheckBox::indicator {
+                width: 18px;
+                height: 18px;
+                border-radius: 4px;
+                border: 1px solid #d1d5db;
+                background-color: #ffffff;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #3b82f6;
+                border: 1px solid #3b82f6;
+            }
+            QCheckBox::indicator:hover {
+                border: 1px solid #3b82f6;
+            }
+        """
+
+    @staticmethod
+    def get_label_style():
+        return """
+            QLabel {
+                color: #1f2937;
+                font-weight: 500;
+            }
+        """
 
 class DatabaseConnectionDialog(QWidget):
     def __init__(self, parent=None):
@@ -23,28 +146,41 @@ class DatabaseConnectionDialog(QWidget):
     
     def initUI(self):
         self.setWindowTitle('Conexão com Banco de Dados')
+        self.setMinimumWidth(400)
         
         layout = QFormLayout()
+        layout.setSpacing(16)
+        layout.setContentsMargins(24, 24, 24, 24)
+        
+        titulo = QLabel('Configuração de Conexão')
+        titulo.setStyleSheet('font-size: 20px; font-weight: bold; color: #1f2937; margin-bottom: 16px;')
+        layout.addRow(titulo)
         
         self.hostInput = QLineEdit()
         self.hostInput.setText('localhost')
+        self.hostInput.setStyleSheet(TailwindStyle.get_input_style())
         layout.addRow('Host:', self.hostInput)
         
         self.userInput = QLineEdit()
+        self.userInput.setStyleSheet(TailwindStyle.get_input_style())
         layout.addRow('Usuário:', self.userInput)
         
         self.passwordInput = QLineEdit()
         self.passwordInput.setEchoMode(QLineEdit.Password)
+        self.passwordInput.setStyleSheet(TailwindStyle.get_input_style())
         layout.addRow('Senha:', self.passwordInput)
         
         self.databaseInput = QLineEdit()
+        self.databaseInput.setStyleSheet(TailwindStyle.get_input_style())
         layout.addRow('Banco de Dados:', self.databaseInput)
         
         self.conectarBtn = QPushButton('Conectar')
+        self.conectarBtn.setStyleSheet(TailwindStyle.get_button_style())
         self.conectarBtn.clicked.connect(self.testarConexao)
         layout.addRow(self.conectarBtn)
         
         self.statusLabel = QLabel('')
+        self.statusLabel.setStyleSheet(TailwindStyle.get_label_style())
         layout.addRow(self.statusLabel)
         
         self.setLayout(layout)
@@ -180,39 +316,85 @@ class TestDataGeneratorGUI(QMainWindow):
         
         widget_central = QWidget()
         layout_principal = QVBoxLayout()
+        layout_principal.setSpacing(16)
+        layout_principal.setContentsMargins(24, 24, 24, 24)
         widget_central.setLayout(layout_principal)
         self.setCentralWidget(widget_central)
         
+        titulo = QLabel('Gerador de Dados de Teste')
+        titulo.setStyleSheet('font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 16px;')
+        layout_principal.addWidget(titulo)
+        
         btn_conexao = QPushButton('Configurar Conexão')
+        btn_conexao.setStyleSheet(TailwindStyle.get_button_style())
         btn_conexao.clicked.connect(self.abrir_conexao)
         layout_principal.addWidget(btn_conexao)
         
+        frame_tabela = QFrame()
+        frame_tabela.setStyleSheet('background-color: #f3f4f6; border-radius: 8px; padding: 16px;')
+        layout_tabela = QVBoxLayout()
+        layout_tabela.setSpacing(8)
+        
+        label_tabela = QLabel('Selecione a Tabela:')
+        label_tabela.setStyleSheet(TailwindStyle.get_label_style())
+        layout_tabela.addWidget(label_tabela)
+        
         self.combo_tabelas = QComboBox()
         self.combo_tabelas.setEnabled(False)
-        layout_principal.addWidget(QLabel('Selecione a Tabela:'))
-        layout_principal.addWidget(self.combo_tabelas)
+        self.combo_tabelas.setStyleSheet(TailwindStyle.get_input_style())
+        layout_tabela.addWidget(self.combo_tabelas)
         
+        frame_tabela.setLayout(layout_tabela)
+        layout_principal.addWidget(frame_tabela)
+        
+        frame_quantidade = QFrame()
+        frame_quantidade.setStyleSheet('background-color: #f3f4f6; border-radius: 8px; padding: 16px;')
         layout_quantidade = QHBoxLayout()
-        layout_quantidade.addWidget(QLabel('Quantidade de Registros:'))
+        layout_quantidade.setSpacing(8)
+        
+        label_quantidade = QLabel('Quantidade de Registros:')
+        label_quantidade.setStyleSheet(TailwindStyle.get_label_style())
+        layout_quantidade.addWidget(label_quantidade)
+        
         self.input_quantidade = QLineEdit()
         self.input_quantidade.setText('10')
+        self.input_quantidade.setStyleSheet(TailwindStyle.get_input_style())
         layout_quantidade.addWidget(self.input_quantidade)
-        layout_principal.addLayout(layout_quantidade)
+        
+        frame_quantidade.setLayout(layout_quantidade)
+        layout_principal.addWidget(frame_quantidade)
+        
+        frame_formatos = QFrame()
+        frame_formatos.setStyleSheet('background-color: #f3f4f6; border-radius: 8px; padding: 16px;')
+        layout_formatos = QVBoxLayout()
+        layout_formatos.setSpacing(8)
+        
+        label_formatos = QLabel('Formatos de Exportação:')
+        label_formatos.setStyleSheet(TailwindStyle.get_label_style())
+        layout_formatos.addWidget(label_formatos)
         
         grupo_exportacao = QHBoxLayout()
+        grupo_exportacao.setSpacing(16)
+        
         self.check_sql = QCheckBox('SQL')
         self.check_csv = QCheckBox('CSV')
         self.check_json = QCheckBox('JSON')
-        grupo_exportacao.addWidget(self.check_sql)
-        grupo_exportacao.addWidget(self.check_csv)
-        grupo_exportacao.addWidget(self.check_json)
-        layout_principal.addLayout(grupo_exportacao)
+        
+        for checkbox in [self.check_sql, self.check_csv, self.check_json]:
+            checkbox.setStyleSheet(TailwindStyle.get_checkbox_style())
+            grupo_exportacao.addWidget(checkbox)
+        
+        layout_formatos.addLayout(grupo_exportacao)
+        frame_formatos.setLayout(layout_formatos)
+        layout_principal.addWidget(frame_formatos)
         
         btn_gerar = QPushButton('Gerar Dados')
+        btn_gerar.setStyleSheet(TailwindStyle.get_button_style())
         btn_gerar.clicked.connect(self.gerar_e_exportar)
         layout_principal.addWidget(btn_gerar)
         
         self.label_status = QLabel('')
+        self.label_status.setStyleSheet(TailwindStyle.get_label_style())
         layout_principal.addWidget(self.label_status)
         
         self.gerador = None
@@ -287,6 +469,8 @@ def main():
     
     app.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     app.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    
+    TailwindStyle.apply_style(app)
     
     gerador_gui = TestDataGeneratorGUI()
     gerador_gui.show()
